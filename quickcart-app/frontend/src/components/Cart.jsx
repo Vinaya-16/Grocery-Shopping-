@@ -1,59 +1,198 @@
 import React from 'react';
 
-function Cart({ cart, closeCart, removeFromCart, updateQuantity, setActivePage }) {
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-  const delivery = cart.length > 0 ? 4.99 : 0;
-  const total = subtotal + delivery;
+function Cart({
+  cart,
+  closeCart,
+  removeFromCart,
+  updateQuantity,
+  setActivePage
+}) {
 
-  const handleCloseAndNavigate = () => {
-    setActivePage('home'); // Sets the view back to Home
-    closeCart();           // Closes the sidebar overlay
-  };
+  const subtotal = cart.reduce(
+    (sum, item) =>
+      sum + (item.price * item.quantity),
+    0
+  );
+
+  const deliveryFee =
+    subtotal > 500
+      ? 0
+      : subtotal === 0
+        ? 0
+        : 40;
+
+  const total = subtotal + deliveryFee;
 
   return (
-    <div className="cart-overlay" onClick={closeCart}>
-      <div className="cart-sidebar" onClick={(e) => e.stopPropagation()}>
+    <div className="cart-overlay">
+
+      <div className="cart-sidebar">
+
+        {/* HEADER */}
         <div className="cart-header">
-          <h2>Your Cart</h2>
-          <button className="close-x" onClick={handleCloseAndNavigate}>&times;</button>
-        </div>
 
-        <div className="cart-items-list">
-          {/* ADDED: Empty State Logic based on image_e96bb5.jpg */}
-          {cart.length === 0 ? (
-            <div className="empty-cart-msg">Your cart is empty</div>
-          ) : (
-            cart.map((item) => (
-              <div key={item.id} className="cart-item-card">
-                <img src={item.image} alt={item.name} className="cart-item-img" />
-                <div className="cart-item-info">
-                  <div className="cart-item-header">
-                    <h4 className="cart-item-title">{item.name}</h4>
-                    <button className="delete-item-btn" onClick={() => removeFromCart(item.id)}>
-                      🗑️
-                    </button>
-                  </div>
-                  <p className="cart-item-price">${item.price.toFixed(2)}</p>
-                  <div className="quantity-controls">
-                    <button onClick={() => updateQuantity(item.id, -1)}>-</button>
-                    <span>{item.quantity || 1}</span>
-                    <button onClick={() => updateQuantity(item.id, 1)}>+</button>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+          <div>
+            <h2>Your Cart</h2>
 
-        <div className="cart-footer">
-          <div className="summary-line"><span>Subtotal</span> <span>${subtotal.toFixed(2)}</span></div>
-          <div className="summary-line"><span>Delivery</span> <span>${delivery.toFixed(2)}</span></div>
-          <div className="summary-line total"><strong>Total</strong> <strong>${total.toFixed(2)}</strong></div>
-          {/* Updated class name for the dark button */}
-          <button className="auth-submit-btn" style={{ width: '100%', marginTop: '20px' }}>
-            Proceed to Checkout
+            <p className="cart-subtitle">
+              {cart.length} items added
+            </p>
+          </div>
+
+          <button
+            className="close-cart-btn"
+            onClick={closeCart}
+          >
+            ✕
           </button>
+
         </div>
+
+        {/* EMPTY */}
+        {cart.length === 0 ? (
+
+          <div className="empty-cart-container">
+
+            <div className="empty-cart-icon">
+              🛒
+            </div>
+
+            <h3>Your cart is empty</h3>
+
+            <p>
+              Add fresh groceries to begin shopping.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <>
+            {/* ITEMS */}
+            <div className="cart-items">
+
+              {cart.map(item => (
+
+                <div
+                  key={item.id}
+                  className="cart-item"
+                >
+
+                  {/* IMAGE */}
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="cart-item-image"
+                  />
+
+                  {/* INFO */}
+                  <div className="cart-item-info">
+
+                    <h3>{item.name}</h3>
+
+                    <p className="cart-price">
+                      ₹{item.price}
+                    </p>
+
+                    <div className="qty-controls">
+
+                      <button
+                        onClick={() =>
+                          updateQuantity(item.id, -1)
+                        }
+                      >
+                        −
+                      </button>
+
+                      <span>
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        disabled={
+                          item.quantity >= item.stock
+                        }
+                        onClick={() =>
+                          updateQuantity(item.id, 1)
+                        }
+                      >
+                        +
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                  {/* REMOVE */}
+                  <button
+                    className="remove-btn"
+                    onClick={() =>
+                      removeFromCart(item.id)
+                    }
+                  >
+                    ✕
+                  </button>
+
+                </div>
+
+              ))}
+
+            </div>
+
+            {/* FOOTER */}
+            <div className="cart-footer">
+
+              <div className="cart-summary-box">
+
+                <div className="cart-row">
+                  <span>Subtotal</span>
+
+                  <span>
+                    ₹{subtotal.toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="cart-row">
+                  <span>Delivery Fee</span>
+
+                  <span>
+                    {deliveryFee === 0
+                      ? 'FREE'
+                      : `₹${deliveryFee}`}
+                  </span>
+                </div>
+
+                <div className="cart-row total-row">
+                  <span>Total</span>
+
+                  <span>
+                    ₹{total.toFixed(2)}
+                  </span>
+                </div>
+
+              </div>
+
+              {subtotal < 500 && subtotal > 0 && (
+                <p className="free-delivery-note">
+                  Add ₹{(500 - subtotal).toFixed(2)}
+                  more for FREE delivery
+                </p>
+              )}
+
+              <button
+                className="checkout-btn"
+                onClick={() => {
+                  closeCart();
+                  setActivePage('checkout');
+                }}
+              >
+                Proceed to Checkout
+              </button>
+
+            </div>
+          </>
+        )}
+
       </div>
     </div>
   );

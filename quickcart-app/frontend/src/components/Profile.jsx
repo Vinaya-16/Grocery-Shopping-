@@ -1,39 +1,146 @@
 import React from 'react';
 
-function Profile({ isLoggedIn, openAuth, user }) {
-  // If not logged in, show the empty state from image_1c36d0.png
+function Profile({
+  isLoggedIn,
+  user,
+  openAuth,
+  handleLogout,
+  setActivePage,
+  setIsCartOpen
+}) {
+
   if (!isLoggedIn) {
     return (
-      <div className="home-container">
-        <div className="empty-profile-container">
-          <div className="empty-profile-content">
-            <div className="profile-placeholder-icon">👤</div>
-            <h3 className="empty-profile-text">Please login to view your profile</h3>
-            <button className="sign-in-btn" onClick={openAuth}>Sign In</button>
+      <div className="empty-profile-container">
+
+        <div>
+          <div className="profile-placeholder-icon">
+            👤
           </div>
+
+          <h2 className="empty-profile-text">
+            Sign in to view your profile
+          </h2>
+
+          <button
+            className="sign-in-btn"
+            onClick={openAuth}
+          >
+            Sign In
+          </button>
         </div>
+
       </div>
     );
   }
 
   return (
-    <div className="home-container">
-      <div className="profile-details-container">
-        <div className="profile-card">
-          <div className="profile-header">
-            <div className="profile-avatar">👤</div>
-            <h2>{user?.name}</h2>
-          </div>
-          <hr />
-          <div className="profile-info">
-            <p><strong>Email:</strong> {user?.email}</p>
-            {/* <p><strong>Member Since:</strong>{}</p> */}
-          </div>
-          <button className="logout-btn" onClick={() => window.location.reload()}>
-            Logout
-          </button>
+    <div className="profile-page-mobile">
+
+      {/* PROFILE HEADER */}
+      <div className="mobile-profile-header">
+
+        <div className="mobile-avatar">
+          {
+            (
+              user?.full_name?.charAt(0) ||
+              user?.email?.charAt(0) ||
+              'U'
+            ).toUpperCase()
+          }
         </div>
+
+        <h2>
+          {
+            user?.full_name ||
+            user?.email?.split('@')[0] ||
+            'QuickCart User'
+          }
+        </h2>
+
+        <p>
+          {user?.email}
+        </p>
+
       </div>
+
+      {/* SHOP SECTION */}
+      <div className="profile-section">
+
+        <h3>Shopping</h3>
+
+        <div
+          className="profile-option-card"
+          onClick={() => setActivePage('home')}
+        >
+          <div className="option-left">
+            <span>🏠</span>
+            <p>Browse Products</p>
+          </div>
+
+          <span>›</span>
+        </div>
+
+        <div
+          className="profile-option-card"
+          onClick={() => setActivePage('favourites')}
+        >
+          <div className="option-left">
+            <span>❤️</span>
+            <p>Favorites</p>
+          </div>
+
+          <span>›</span>
+        </div>
+
+        <div
+          className="profile-option-card"
+          onClick={() => setIsCartOpen(true)}
+        >
+          <div className="option-left">
+            <span>🛒</span>
+            <p>My Cart</p>
+          </div>
+
+          <span>›</span>
+        </div>
+
+        <div
+          className="profile-option-card"
+          onClick={() => setActivePage('search')}
+        >
+          <div className="option-left">
+            <span>🔍</span>
+            <p>Search Products</p>
+          </div>
+
+          <span>›</span>
+        </div>
+
+      </div>
+
+      {/* ACCOUNT SECTION */}
+      <div className="profile-section">
+
+        <h3>Account</h3>
+
+        <div className="profile-option-card static">
+          <div className="option-left">
+            <span>📧</span>
+            <p>{user?.email}</p>
+          </div>
+        </div>
+
+      </div>
+
+      {/* LOGOUT */}
+      <button
+        className="mobile-logout-btn"
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
+
     </div>
   );
 }

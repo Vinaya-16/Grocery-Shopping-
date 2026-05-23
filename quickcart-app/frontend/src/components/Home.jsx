@@ -16,17 +16,6 @@ const productImages = {
   'Orange Juice': organgejuiceImg,
 };
 
-// const products = [
-//   { name: 'Apple 1kg', rating: 4.6, reviews: 130, price: 3.99, unit: 'kg', category: 'Fruits', image: appleImg },
-//   { name: 'Whole Milk 1L', rating: 4.2, reviews: 150, price: 2.29, unit: 'L', category: 'Dairy', image: milkImg },
-//   { name: 'Broccoli', rating: 4.3, reviews: 170, price: 1.99, unit: 'pc', category: 'Vegetables', image: broccoliImg },
-//   { name: 'Carrot 1kg', rating: 4.4, reviews: 190, price: 1.49, unit: 'kg', category: 'Vegetables', image: carrotImg },
-//   { name: 'Tomato 1kg', rating: 4.5, reviews: 210, price: 2.79, unit: 'kg', category: 'Vegetables', image: tomatoImg },
-//   { name: 'Orange Juice 1L', rating: 4.6, reviews: 230, price: 3.29, unit: 'L', category: 'Beverages', image: organgejuiceImg },
-// ];
-
-
-
 function Home({ addToCart, addToFavourites, favourites }) {
 
   useEffect(() => {
@@ -132,7 +121,10 @@ function Home({ addToCart, addToFavourites, favourites }) {
 
           {filteredProducts.map(product => {
             // Check if this product is already in the favourites list
-            const isFavourite = favourites.some(fav => fav.name === product.name);
+            // const isFavourite = favourites.some(fav => fav.name === product.name);
+            const isFavourite = favourites.some(
+              fav => fav.id === product.id
+            );
 
             return (
               <div key={product.id} className="product-card-modern">
@@ -203,150 +195,3 @@ function Home({ addToCart, addToFavourites, favourites }) {
 }
 
 export default Home;
-
-// import React, { useState } from 'react';
-// import appleImg from '../assets/images/products/apple.jpg';
-// import milkImg from '../assets/images/products/milk.jpg';
-// import broccoliImg from '../assets/images/products/broccoli.jpg';
-// import carrotImg from '../assets/images/products/carrot.jpg';
-// import tomatoImg from '../assets/images/products/tomato.jpg';
-// import organgejuiceImg from '../assets/images/products/orange-juice.jpg';
-
-// const products = [
-//   // { name: 'Pineapple', rating: 4.2, reviews: 50, price: 3.49, unit: 'pc', category: 'Fruits', emoji: '🍍' },
-//   // { name: 'Dragon Fruit', rating: 4.3, reviews: 70, price: 5.99, unit: 'pc', category: 'Fruits', emoji: '🐉' },
-//   // { name: 'Strawberry 500g', rating: 4.4, reviews: 90, price: 4.49, unit: 'pc', category: 'Fruits', emoji: '🍓' },
-//   // { name: 'Mango', rating: 4.5, reviews: 110, price: 2.49, unit: 'pc', category: 'Fruits', emoji: '🥭' },
-//   { name: 'Apple 1kg', rating: 4.6, reviews: 130, price: 3.99, unit: 'kg', category: 'Fruits', image: appleImg },
-//   { name: 'Whole Milk 1L', rating: 4.2, reviews: 150, price: 2.29, unit: 'L', category: 'Dairy', image: milkImg },
-//   { name: 'Broccoli', rating: 4.3, reviews: 170, price: 1.99, unit: 'pc', category: 'Vegetables', image: broccoliImg },
-//   { name: 'Carrot 1kg', rating: 4.4, reviews: 190, price: 1.49, unit: 'kg', category: 'Vegetables', image: carrotImg },
-//   { name: 'Tomato 1kg', rating: 4.5, reviews: 210, price: 2.79, unit: 'kg', category: 'Vegetables', image: tomatoImg },
-//   { name: 'Orange Juice 1L', rating: 4.6, reviews: 230, price: 3.29, unit: 'L', category: 'Beverages', image: organgejuiceImg },
-// ];
-
-// function Home({ addToCart, addToFavourites }) {
-//   const [selectedCategory, setSelectedCategory] = useState('All');
-//   const categories = ['All', 'Fruits', 'Vegetables', 'Dairy', 'Beverages'];
-
-//   const filteredProducts = selectedCategory === 'All'
-//     ? products
-//     : products.filter(p => p.category === selectedCategory);
-
-//   return (
-//     <div>
-//       <div className="hero">
-//         <div className="hero-content">
-//           <h1>Fresh Groceries Delivered in 30 Minutes</h1>
-//           <p>Shop farm-fresh fruits, vegetables, dairy and more.</p>
-//           {/* Navigates to the ID of your products section */}
-//           <a href="#products" className="shop-now-btn">
-//             Shop Now <span>&rsaquo;</span>
-//           </a>
-//         </div>
-//       </div>
-
-//       <div className="offers-section">
-//         <h2 className="section-title">Weekly Offers</h2>
-//         <div className="offers-grid">
-//           <div className="offer-card">
-//             <div className="offer-icon">🥬</div>
-//             <h3>Fresh Vegetables</h3>
-//             <p className="offer-discount">Up to 30% off</p>
-//           </div>
-//           <div className="offer-card">
-//             <div className="offer-icon">🍎</div>
-//             <h3>Seasonal Fruits</h3>
-//             <p className="offer-discount">Up to 35% off</p>
-//           </div>
-//           <div className="offer-card">
-//             <div className="offer-icon">🥛</div>
-//             <h3>Fresh Dairy</h3>
-//             <p className="offer-discount">Milk & Eggs</p>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div className="categories-section">
-//         <h2 className="section-title">Categories</h2>
-//         <div className="categories-grid">
-//           {categories.map(cat => (
-//             <button
-//               key={cat}
-//               className={`category-btn ${selectedCategory === cat ? 'active' : ''}`}
-//               onClick={() => setSelectedCategory(cat)}
-//             >
-//               {cat}
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-
-//       <div id='products' className="products-section">
-//         <h2 className="section-title">Popular Products</h2>
-//         <div className="products-grid">
-//           {filteredProducts.map(product => (
-//             <div key={product.name} className="product-card">
-
-//               <div className="product-image">
-//                 <img src={product.image} alt={product.name} className="product-img" />
-//               </div>
-
-//               {/* <div className="product-image">
-//                 <span style={{ fontSize: 60 }}>{product.emoji}</span>
-//               </div> */}
-
-//               <div className="product-name">{product.name}</div>
-//               <div className="product-rating">
-//                 ★ {product.rating} ({product.reviews} reviews)
-//               </div>
-//               <div className="product-price">${product.price}/{product.unit}</div>
-//               <div className="product-actions">
-//                 <button className="add-to-cart" onClick={() => addToCart(product)}>
-//                   Add to Cart
-//                 </button>
-//                 <button className="fav-btn" onClick={() => addToFavourites(product)}>
-//                   ❤️
-//                 </button>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-
-//       <footer className="footer">
-//         <div className="footer-content">
-//           <div className="footer-section">
-//             <h4>QuickLinks</h4>
-//             <p>About Us</p>
-//             <p>Careers</p>
-//             <p>Blog</p>
-//             <p>Press</p>
-//           </div>
-//           <div className="footer-section">
-//             <h4>Support</h4>
-//             <p>Help Center</p>
-//             <p>FAQs</p>
-//             <p>Terms of Service</p>
-//             <p>Privacy Policy</p>
-//           </div>
-//           <div className="footer-section">
-//             <h4>Contact</h4>
-//             <p>📧 support@quickcart.com</p>
-//             <p>📞 +1 (800) 123-4567</p>
-//             <p>📍 123 Market St, NY</p>
-//             <div className="store-buttons">
-//               <span className="store-btn">📱 App Store</span>
-//               <span className="store-btn">▶️ Google Play</span>
-//             </div>
-//           </div>
-//         </div>
-//         <div className="footer-bottom">
-//           <p>© 2024 QuickCart. All rights reserved.</p>
-//         </div>
-//       </footer>
-//     </div>
-//   );
-// }
-
-// export default Home;

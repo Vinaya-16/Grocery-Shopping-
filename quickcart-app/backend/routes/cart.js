@@ -5,8 +5,10 @@ import { ObjectId } from 'mongodb';
 
 const router = express.Router();
 
-// Get user ID from token
+
+// GET USER ID FROM TOKEN
 const getUserIdFromToken = (req) => {
+
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -16,68 +18,99 @@ const getUserIdFromToken = (req) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, 'my_temp_secret_key_2026');
+
+    const decoded = jwt.verify(
+      token,
+      'my_temp_secret_key_2026'
+    );
+
     return decoded.userId;
+
   } catch (error) {
-    console.error('Token verification failed:', error.message);
+
+    console.error('Token verification failed');
+
     return null;
   }
 };
 
-// GET USER CART
+
+// GET CART
 router.get('/', async (req, res) => {
+
   try {
+
     const userId = getUserIdFromToken(req);
 
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid or missing token'
+        message: 'Unauthorized'
       });
     }
 
     const client = await clientPromise;
     const db = client.db('GroceryStore');
 
-    const cartItems = await db.collection('cart_items').aggregate([
-      {
-        $match: {
-          user_id: new ObjectId(userId)
-        }
-      },
-      {
-        $lookup: {
-          from: 'products',
-          localField: 'product_id',
-          foreignField: '_id',
-          as: 'product'
-        }
-      },
-      {
-        $unwind: '$product'
-      },
-      {
-        $project: {
-          _id: 0,
+    const cartItems = await db.collection('cart_items')
+      .aggregate([
+        {
+          $match: {
+            user_id: new ObjectId(userId)
+          }
+        },
 
-          id: { $toString: '$_id' },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'product_id',
+            foreignField: '_id',
+            as: 'product'
+          }
+        },
 
-          quantity: 1,
+        {
+          $unwind: '$product'
+        },
 
-          product: {
-            id: { $toString: '$product._id' },
-            name: '$product.name',
-            price: '$product.price',
-            image_url: '$product.image_url',
-            category: '$product.category'
-          },
+        {
+          $project: {
 
-          subtotal: {
-            $multiply: ['$quantity', '$product.price']
+            _id: 0,
+
+            // CART ITEM ID
+            id: {
+              $toString: '$_id'
+            },
+
+            quantity: 1,
+
+            product: {
+
+              // PRODUCT ID
+              id: {
+                $toString: '$product._id'
+              },
+
+              name: '$product.name',
+              price: '$product.price',
+              image_url: '$product.image_url',
+              category: '$product.category',
+              rating: '$product.rating',
+              unit: '$product.unit',
+              stock: '$product.stock'
+            },
+
+            subtotal: {
+              $multiply: [
+                '$quantity',
+                '$product.price'
+              ]
+            }
           }
         }
-      }
-    ]).toArray();
+      ])
+      .toArray();
 
     const total = cartItems.reduce(
       (sum, item) => sum + item.subtotal,
@@ -92,31 +125,34 @@ router.get('/', async (req, res) => {
     });
 
   } catch (error) {
+
     console.error('Get cart error:', error);
 
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch cart',
-      error: error.message
+      message: 'Failed to fetch cart'
     });
   }
 });
 
+
 // ADD TO CART
 router.post('/add', async (req, res) => {
+
   try {
+
     const userId = getUserIdFromToken(req);
 
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid or missing token'
+        message: 'Unauthorized'
       });
     }
 
     const { product_id, quantity } = req.body;
 
-    if (!product_id || !quantity || quantity < 1) {
+    if (!product_id || !quantity) {
       return res.status(400).json({
         success: false,
         message: 'Product ID and quantity required'
@@ -126,7 +162,7 @@ router.post('/add', async (req, res) => {
     const client = await clientPromise;
     const db = client.db('GroceryStore');
 
-    // Check if product exists
+    // FIND PRODUCT
     const product = await db.collection('products').findOne({
       _id: new ObjectId(product_id)
     });
@@ -138,59 +174,181 @@ router.post('/add', async (req, res) => {
       });
     }
 
-    // Check if already exists in cart
+    // CHECK EXISTING ITEM
     const existing = await db.collection('cart_items').findOne({
       user_id: new ObjectId(userId),
       product_id: new ObjectId(product_id)
     });
 
+    // IF ALREADY EXISTS
     if (existing) {
 
+      const updatedQuantity =
+        existing.quantity + quantity;
+
+      // STOCK CHECK
+      if (updatedQuantity > product.stock) {
+        return res.status(400).json({
+          success: false,
+          message: 'Stock limit reached'
+        });
+      }
+
       await db.collection('cart_items').updateOne(
-        { _id: existing._id },
+        {
+          _id: existing._id
+        },
         {
           $set: {
-            quantity: existing.quantity + quantity
+            quantity: updatedQuantity
           }
         }
       );
 
     } else {
 
+      // STOCK CHECK
+      if (quantity > product.stock) {
+        return res.status(400).json({
+          success: false,
+          message: 'Stock limit reached'
+        });
+      }
+
+      // INSERT NEW
       await db.collection('cart_items').insertOne({
+
         user_id: new ObjectId(userId),
+
         product_id: new ObjectId(product_id),
-        quantity,
+
+        quantity: quantity,
+
         added_at: new Date()
       });
-
     }
 
     res.json({
       success: true,
-      message: 'Item added to cart'
+      message: 'Added to cart'
     });
 
   } catch (error) {
-    console.error('Add to cart error:', error);
+
+    console.error('Add cart error:', error);
 
     res.status(500).json({
       success: false,
-      message: 'Failed to add item',
-      error: error.message
+      message: 'Failed to add cart'
     });
   }
 });
 
-// REMOVE ITEM
-router.delete('/remove/:itemId', async (req, res) => {
+
+// UPDATE QUANTITY
+router.put('/update/:itemId', async (req, res) => {
+
   try {
+
     const userId = getUserIdFromToken(req);
 
     if (!userId) {
       return res.status(401).json({
+        success: false
+      });
+    }
+
+    const { itemId } = req.params;
+    const { quantity } = req.body;
+
+    const client = await clientPromise;
+    const db = client.db('GroceryStore');
+
+    // GET CURRENT ITEM
+    const cartItem = await db.collection('cart_items').findOne({
+      _id: new ObjectId(itemId),
+      user_id: new ObjectId(userId)
+    });
+
+    if (!cartItem) {
+      return res.status(404).json({
         success: false,
-        message: 'Invalid or missing token'
+        message: 'Cart item not found'
+      });
+    }
+
+    // GET PRODUCT
+    const product = await db.collection('products').findOne({
+      _id: cartItem.product_id
+    });
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    // DELETE IF 0
+    if (quantity <= 0) {
+
+      await db.collection('cart_items').deleteOne({
+        _id: new ObjectId(itemId),
+        user_id: new ObjectId(userId)
+      });
+
+      return res.json({
+        success: true,
+        removed: true
+      });
+    }
+
+    // STOCK CHECK
+    if (quantity > product.stock) {
+      return res.status(400).json({
+        success: false,
+        message: 'Stock limit reached'
+      });
+    }
+
+    // UPDATE
+    await db.collection('cart_items').updateOne(
+      {
+        _id: new ObjectId(itemId),
+        user_id: new ObjectId(userId)
+      },
+      {
+        $set: {
+          quantity
+        }
+      }
+    );
+
+    res.json({
+      success: true
+    });
+
+  } catch (error) {
+
+    console.error('Update cart error:', error);
+
+    res.status(500).json({
+      success: false
+    });
+  }
+});
+
+
+// REMOVE ITEM
+router.delete('/remove/:itemId', async (req, res) => {
+
+  try {
+
+    const userId = getUserIdFromToken(req);
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false
       });
     }
 
@@ -199,17 +357,10 @@ router.delete('/remove/:itemId', async (req, res) => {
     const client = await clientPromise;
     const db = client.db('GroceryStore');
 
-    const result = await db.collection('cart_items').deleteOne({
+    await db.collection('cart_items').deleteOne({
       _id: new ObjectId(itemId),
       user_id: new ObjectId(userId)
     });
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Item not found'
-      });
-    }
 
     res.json({
       success: true,
@@ -217,14 +368,14 @@ router.delete('/remove/:itemId', async (req, res) => {
     });
 
   } catch (error) {
+
     console.error('Remove cart error:', error);
 
     res.status(500).json({
-      success: false,
-      message: 'Failed to remove item',
-      error: error.message
+      success: false
     });
   }
 });
+
 
 export default router;

@@ -8,39 +8,52 @@ function Navbar({ setActivePage, activePage, openCart, cartCount }) {
         <div className="logo" onClick={() => setActivePage('home')}>
           🍃 QuickCart
         </div>
-        
-        <div className="search-bar-container">
-          <span className="search-icon">🔍</span>
-          <input type="text" placeholder="Search for fresh groceries..." className="nav-search-input" />
+
+        <div
+          className="cart-icon-standalone"
+          onClick={openCart}
+        >
+
+          🛒
+
+          {cartCount > 0 && (
+            <span className="cart-badge">
+              {cartCount}
+            </span>
+          )}
+
         </div>
 
-        <div className="cart-icon-standalone" onClick={openCart}>
-          🛒
-        </div>
+        <button
+          className={activePage === 'orders' ? 'active' : ''}
+          onClick={() => setActivePage('orders')}
+        >
+          📦 Orders
+        </button>
       </div>
 
       {/* Bottom Row: Navigation Links */}
       <div className="nav-bottom">
         <div className="nav-links">
-          <button 
+          <button
             className={activePage === 'home' ? 'active' : ''}
             onClick={() => setActivePage('home')}
           >
             🏠 Home
           </button>
-          <button 
+          <button
             className={activePage === 'favourites' ? 'active' : ''}
             onClick={() => setActivePage('favourites')}
           >
             ♡ Favorites
           </button>
-          <button 
+          <button
             className={activePage === 'profile' ? 'active' : ''}
             onClick={() => setActivePage('profile')}
           >
             👤 Profile
           </button>
-          <button 
+          <button
             className={activePage === 'search' ? 'active' : ''}
             onClick={() => setActivePage('search')}
           >
