@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import appleImg from '../assets/images/products/apple.jpg';
-import milkImg from '../assets/images/products/milk.jpg';
-import broccoliImg from '../assets/images/products/broccoli.jpg';
-import carrotImg from '../assets/images/products/carrot.jpg';
-import tomatoImg from '../assets/images/products/tomato.jpg';
-import organgejuiceImg from '../assets/images/products/orange-juice.jpg';
+// import appleImg from '../assets/images/products/apple.jpg';
+// import milkImg from '../assets/images/products/milk.jpg';
+// import broccoliImg from '../assets/images/products/broccoli.jpg';
+// import carrotImg from '../assets/images/products/carrot.jpg';
+// import tomatoImg from '../assets/images/products/tomato.jpg';
+// import organgejuiceImg from '../assets/images/products/orange-juice.jpg';
 
-const productImages = {
-  'Fresh Apple': appleImg,
-  'Amul Milk': milkImg,
-  'Broccoli': broccoliImg,
-  'Carrot': carrotImg,
-  'Tomato': tomatoImg,
-  'Orange Juice': organgejuiceImg,
-};
+// const productImages = {
+//   'Fresh Apple': appleImg,
+//   'Amul Milk': milkImg,
+//   'Broccoli': broccoliImg,
+//   'Carrot': carrotImg,
+//   'Tomato': tomatoImg,
+//   'Orange Juice': organgejuiceImg,
+// };
 
 const API_URL = import.meta.env.VITE_API_URL;
 
