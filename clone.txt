@@ -1,6 +1,0 @@
-{
-  "user_id": "6a00cc358e08009f47c0cad1",
-  "product_id": "6a00ccc08e08009f47c0cadf",
-  "added_at": {"$date": "2026-05-10T00:00:00Z"},
-  "notes": "Buy when on sale"
-}
