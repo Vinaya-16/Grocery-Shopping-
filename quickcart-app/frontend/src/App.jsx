@@ -19,7 +19,7 @@ function App() {
   const [favourites, setFavourites] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-   const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
 
@@ -38,7 +38,7 @@ function App() {
     }
 
     fetchCart();
-    // fetchWishlist();
+    fetchWishlist();
   }, []);
 
   const updateQuantity = async (cartItemId, change) => {
@@ -207,7 +207,7 @@ function App() {
           stock: item.product.stock,
 
           image: item.product.image_url
-            ? `${API_URL}/${item.product.image_url}`
+            ? `${API_URL}${item.product.image_url}`
             : ''
 
         }));
@@ -275,7 +275,7 @@ function App() {
             category: item.product.category,
 
             image: item.product.image_url
-              ? `${API_URL}/${item.product.image_url}`
+              ? `${API_URL}${item.product.image_url}`
               : '',
 
             rating: item.product.rating
@@ -351,7 +351,7 @@ function App() {
 
             image:
               product.image ||
-              `${API_URL}/${product.image_url}`
+              `${API_URL}${product.image_url}`
           }
         ]);
       }

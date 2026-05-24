@@ -113,7 +113,7 @@ function Search({ addToCart, addToFavourites, favourites }) {
                   {/* IMAGE */}
                   <div className="product-image-wrap">
                     <img
-                      src={`${API_URL}${item.product.image_url}`}
+                      src={`${API_URL}${product.image_url}`}
                       alt={product.name}
                       className="product-img-main"
                     />
