@@ -35,12 +35,6 @@ function AuthModal({ closeModal, onLogin }) {
 
       const response = await axios.post(endpoint, payload);
 
-      // const response = await axios.post(endpoint, {
-      //   name: fullName,
-      //   email: email,
-      //   password: password
-      // });
-
       if (response.data.success) {
         localStorage.setItem(
           'token',
