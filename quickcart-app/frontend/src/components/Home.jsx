@@ -1,20 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// import appleImg from '../assets/images/products/apple.jpg';
-// import milkImg from '../assets/images/products/milk.jpg';
-// import broccoliImg from '../assets/images/products/broccoli.jpg';
-// import carrotImg from '../assets/images/products/carrot.jpg';
-// import tomatoImg from '../assets/images/products/tomato.jpg';
-// import organgejuiceImg from '../assets/images/products/orange-juice.jpg';
-
-// const productImages = {
-//   'Fresh Apple': appleImg,
-//   'Amul Milk': milkImg,
-//   'Broccoli': broccoliImg,
-//   'Carrot': carrotImg,
-//   'Tomato': tomatoImg,
-//   'Orange Juice': organgejuiceImg,
-// };
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -138,7 +123,14 @@ function Home({ addToCart, addToFavourites, favourites }) {
 
                 <div className="product-image-wrap">
                   <img
-                    src={`${API_URL}${product.image_url}`}
+                    src={
+                      product.image_url?.startsWith('http')
+                        ? product.image_url.replace(
+                          'http://localhost:5000',
+                          API_URL
+                        )
+                        : `${API_URL}${product.image_url}`
+                    }
                     alt={product.name}
                     className="product-img-main"
                   />

@@ -95,7 +95,14 @@ function Orders() {
                       >
 
                         <img
-                          src={item.image}
+                          src={
+                            item.image?.startsWith('http://localhost:5000')
+                              ? item.image.replace(
+                                'http://localhost:5000',
+                                import.meta.env.VITE_API_URL
+                              )
+                              : item.image
+                          }
                           alt={item.name}
                         />
 
