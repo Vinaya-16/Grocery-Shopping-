@@ -42,7 +42,10 @@ function AuthModal({ closeModal, onLogin }) {
       // });
 
       if (response.data.success) {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem(
+          'token',
+          response.data.token
+        );
 
         localStorage.setItem(
           'user',

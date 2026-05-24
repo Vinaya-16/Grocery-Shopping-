@@ -6,6 +6,8 @@ function Search({ addToCart, addToFavourites, favourites }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProducts] = useState([]);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -111,7 +113,7 @@ function Search({ addToCart, addToFavourites, favourites }) {
                   {/* IMAGE */}
                   <div className="product-image-wrap">
                     <img
-                      src={`http://localhost:5000${product.image_url}`}
+                      src={`${API_URL}${item.product.image_url}`}
                       alt={product.name}
                       className="product-img-main"
                     />

@@ -16,7 +16,7 @@ const getUserIdFromToken = (req) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, 'my_temp_secret_key_2026');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return decoded.userId;
   } catch (error) {
     return null;

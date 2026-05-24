@@ -23,13 +23,6 @@ function Navbar({ setActivePage, activePage, openCart, cartCount }) {
           )}
 
         </div>
-
-        <button
-          className={activePage === 'orders' ? 'active' : ''}
-          onClick={() => setActivePage('orders')}
-        >
-          📦 Orders
-        </button>
       </div>
 
       {/* Bottom Row: Navigation Links */}
@@ -58,6 +51,13 @@ function Navbar({ setActivePage, activePage, openCart, cartCount }) {
             onClick={() => setActivePage('search')}
           >
             🔍 Search
+          </button>
+
+          <button
+            className={activePage === 'orders' ? 'active' : ''}
+            onClick={() => setActivePage('orders')}
+          >
+            📦 Orders
           </button>
         </div>
       </div>

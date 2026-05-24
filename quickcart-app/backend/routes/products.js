@@ -1,9 +1,11 @@
 import express from 'express';
 import clientPromise from '../lib/mongodb.js';
 import { ObjectId } from 'mongodb';
-import { reverse } from 'dns';
+// import { reverse } from 'dns';
 
 const router = express.Router();
+
+const JWT_SECRET= process.env.JWT_SECRET;
 
 // GET /api/products - Get all products
 router.get('/', async (req, res) => {
@@ -20,7 +22,8 @@ router.get('/', async (req, res) => {
       price: product.price,
       category: product.category,
       image_url: product.image_url,
-      stock_quantity: product.stock_quantity,
+      // stock_quantity: product.stock_quantity,
+      stock: product.stock,
       rating: product.rating,
       reviews: product.reviews,
       unit: product.unit
@@ -66,7 +69,8 @@ router.get('/:id', async (req, res) => {
         price: product.price,
         category: product.category,
         image_url: product.image_url,
-        stock_quantity: product.stock_quantity,
+        // stock_quantity: product.stock_quantity,
+        stoock: product.stock,
         rating: product.rating,
         reviews: product.reviews,
         unit: product.unit

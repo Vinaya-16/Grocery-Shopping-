@@ -21,7 +21,7 @@ const getUserIdFromToken = (req) => {
 
     const decoded = jwt.verify(
       token,
-      'my_temp_secret_key_2026'
+      process.env.JWT_SECRET
     );
 
     return decoded.userId;

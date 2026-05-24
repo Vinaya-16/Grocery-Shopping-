@@ -16,6 +16,8 @@ const productImages = {
   'Orange Juice': organgejuiceImg,
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Home({ addToCart, addToFavourites, favourites }) {
 
   useEffect(() => {
@@ -138,7 +140,7 @@ function Home({ addToCart, addToFavourites, favourites }) {
 
                 <div className="product-image-wrap">
                   <img
-                    src={`http://localhost:5000${product.image_url}`}
+                    src={`${API_URL}${product.image_url}`}
                     alt={product.name}
                     className="product-img-main"
                   />

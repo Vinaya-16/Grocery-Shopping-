@@ -172,7 +172,9 @@ function App() {
   };
 
   const fetchCart = async () => {
+
     try {
+
       const token = localStorage.getItem('token');
 
       if (!token) return;
@@ -192,10 +194,7 @@ function App() {
 
         const formattedCart = response.data.cart.map(item => ({
 
-          // CART ITEM ID
           id: item.id,
-
-          // PRODUCT ID
           productId: item.product.id,
 
           quantity: item.quantity,
@@ -206,15 +205,20 @@ function App() {
           rating: item.product.rating,
           unit: item.product.unit,
           stock: item.product.stock,
-          image: `${API_URL}${item.product.image_url}`
-          // image: `http://localhost:5000${item.product.image_url}`
+
+          image: item.product.image_url
+            ? `${API_URL}${item.product.image_url}`
+            : ''
+
         }));
 
         setCart(formattedCart);
       }
 
     } catch (error) {
+
       console.error('Fetch cart error:', error);
+
     }
   };
 
@@ -363,15 +367,44 @@ function App() {
     }
   };
 
-  const removeFromFavourites = (productName) => {
-    setFavourites(favourites.filter(item => item.name !== productName));
+  const removeFromFavourites = async (productId) => {
+
+    try {
+
+      const token = localStorage.getItem('token');
+
+      const API_URL = import.meta.env.VITE_API_URL;
+
+      await axios.delete(
+        `${API_URL}/api/wishlist/remove/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setFavourites(prev =>
+        prev.filter(item => item.id !== productId)
+      );
+
+    } catch (error) {
+
+      console.error('Remove favourite error:', error);
+
+    }
   };
 
   const handleLogout = () => {
+
     localStorage.removeItem('token');
 
+    localStorage.removeItem('user');
+
     setUser(null);
+
     setCart([]);
+
     setFavourites([]);
 
     setIsCartOpen(false);
@@ -436,7 +469,6 @@ function App() {
             favourites={favourites}
           />
         )}
-        {activePage === 'cart' && <Cart cart={cart} removeFromCart={removeFromCart} />}
         {activePage === 'checkout' && (
           <Checkout
             cart={cart}
