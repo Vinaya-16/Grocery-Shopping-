@@ -12,9 +12,9 @@ function AuthModal({ closeModal, onLogin }) {
     const fullName = formData.get('fullName');
     const email = formData.get('email');
     const password = formData.get('password');
+   const API_URL = import.meta.env.VITE_API_URL;
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL;
 
       const endpoint = isSignUp
         ? `${API_URL}/api/auth/signup`

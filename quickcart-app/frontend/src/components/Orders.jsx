@@ -4,6 +4,7 @@ import axios from 'axios';
 function Orders() {
 
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchOrders();
@@ -14,9 +15,7 @@ function Orders() {
     try {
 
       const token = localStorage.getItem('token');
-
       const API_URL = import.meta.env.VITE_API_URL;
-
       const response = await axios.get(
         `${API_URL}/api/orders/history`,
         {
@@ -26,12 +25,17 @@ function Orders() {
         }
       );
 
-      if (response.data.success) {
-        setOrders(response.data.orders);
-      }
+      console.log("ORDERS API RESPONSE:", response.data);
+      setOrders(response.data.orders || []);
 
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
+    }
+
+    if (loading) {
+      return <div>Loading orders...</div>;
     }
   };
 
@@ -83,7 +87,7 @@ function Orders() {
 
                   <div className="order-items">
 
-                    {order.items.map(item => (
+                    {(order.items || []).map(item => (
 
                       <div
                         key={item.id}

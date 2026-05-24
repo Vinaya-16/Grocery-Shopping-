@@ -122,8 +122,6 @@ function Home({ addToCart, addToFavourites, favourites }) {
         <div className="products-grid">
 
           {filteredProducts.map(product => {
-            // Check if this product is already in the favourites list
-            // const isFavourite = favourites.some(fav => fav.name === product.name);
             const isFavourite = favourites.some(
               fav => fav.id === product.id
             );
@@ -140,7 +138,7 @@ function Home({ addToCart, addToFavourites, favourites }) {
 
                 <div className="product-image-wrap">
                   <img
-                    src={`${API_URL}${product.image_url}`}
+                    src={`${API_URL}/${product.image_url}`}
                     alt={product.name}
                     className="product-img-main"
                   />

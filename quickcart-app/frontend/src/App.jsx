@@ -19,6 +19,8 @@ function App() {
   const [favourites, setFavourites] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+   const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
 
     const storedUser = localStorage.getItem('user');
@@ -58,8 +60,6 @@ function App() {
         alert('Stock limit reached');
         return;
       }
-
-      const API_URL = import.meta.env.VITE_API_URL;
 
       // REMOVE IF 0
       if (newQuantity <= 0) {
@@ -207,7 +207,7 @@ function App() {
           stock: item.product.stock,
 
           image: item.product.image_url
-            ? `${API_URL}${item.product.image_url}`
+            ? `${API_URL}/${item.product.image_url}`
             : ''
 
         }));
@@ -275,7 +275,7 @@ function App() {
             category: item.product.category,
 
             image: item.product.image_url
-              ? `${API_URL}${item.product.image_url}`
+              ? `${API_URL}/${item.product.image_url}`
               : '',
 
             rating: item.product.rating
@@ -351,7 +351,7 @@ function App() {
 
             image:
               product.image ||
-              `${API_URL}${product.image_url}`
+              `${API_URL}/${product.image_url}`
           }
         ]);
       }
